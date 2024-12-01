@@ -2,14 +2,11 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 
-# 파일 경로 설정
-file_path = "C:/Users/dlskr/Downloads/top_5_detailed_products.csv"
+# GitHub에서 CSV 파일 URL 가져오기
+file_url = "https://raw.githubusercontent.com/leenakyungsongtanbujji/streamlit-app/main/top_5_detailed_products.csv"
 
 # CSV 파일 읽기
-data = pd.read_csv(file_path, encoding="cp949")
-
-# 'EXAMIN_MRKT_NM' 열을 '판매처'로 사용
-data["판매처"] = data["EXAMIN_MRKT_NM"]
+data = pd.read_csv(file_url, encoding="cp949")
 
 # Streamlit 제목
 st.title("판매 품목 데이터 분석")

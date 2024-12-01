@@ -2,13 +2,19 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 from matplotlib import rc, font_manager
+import os
 
-# GitHub에 업로드한 NanumGothic 폰트 파일의 URL
+# NanumGothic 폰트 다운로드 경로 설정
 font_url = "https://raw.githubusercontent.com/leenakyungsongtanbujji/streamlit-app/main/NanumGothic.ttf"
+font_path = "NanumGothic.ttf"
 
-# 폰트 설정
-font_path = font_manager.FontProperties(fname=font_url)
-plt.rc('font', family=font_path.get_name())
+# 폰트 다운로드
+if not os.path.exists(font_path):
+    os.system(f"wget {font_url} -O {font_path}")
+
+# Matplotlib에 폰트 적용
+font_prop = font_manager.FontProperties(fname=font_path)
+plt.rc('font', family=font_prop.get_name())
 plt.rcParams['axes.unicode_minus'] = False
 
 # GitHub에 업로드한 CSV 파일의 URL

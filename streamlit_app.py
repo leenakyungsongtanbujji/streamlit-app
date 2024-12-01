@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 from matplotlib import rc, font_manager
 import os
 
-# NanumGothic 폰트 다운로드 경로 설정
+# NanumGothic 폰트 다운로드 및 설정
 font_url = "https://raw.githubusercontent.com/leenakyungsongtanbujji/streamlit-app/main/NanumGothic.ttf"
 font_path = "NanumGothic.ttf"
 
-# 폰트 다운로드
 if not os.path.exists(font_path):
-    os.system(f"wget {font_url} -O {font_path}")
+    # 다운로드 명령어 수정
+    os.system(f"curl -o {font_path} {font_url}")
 
 # Matplotlib에 폰트 적용
 font_prop = font_manager.FontProperties(fname=font_path)
@@ -60,10 +60,10 @@ daily_prices = filtered_data.groupby("EXAMIN_DE")["EXAMIN_AMT"].mean()
 
 fig, ax = plt.subplots(figsize=(10, 5))
 ax.plot(daily_prices.index, daily_prices.values, marker='o', label=selected_product)
-ax.set_title(f"{selected_product}의 일별 평균 가격 변화")
-ax.set_xlabel("날짜")
-ax.set_ylabel("평균 가격 (원)")
-ax.legend()
+ax.set_title(f"{selected_product}의 일별 평균 가격 변화", fontproperties=font_prop)
+ax.set_xlabel("날짜", fontproperties=font_prop)
+ax.set_ylabel("평균 가격 (원)", fontproperties=font_prop)
+ax.legend(prop=font_prop)
 st.pyplot(fig)
 
 # 시장 vs 마트 가격 비교
@@ -73,9 +73,9 @@ market_vs_mart = filtered_data.groupby("판매처 유형")["EXAMIN_AMT"].mean()
 
 fig2, ax2 = plt.subplots(figsize=(10, 5))
 market_vs_mart.plot(kind="bar", color=["salmon", "skyblue"], ax=ax2)
-ax2.set_title(f"{selected_product} 시장 vs 마트 평균 가격 비교")
-ax2.set_ylabel("평균 가격 (원)")
-ax2.set_xlabel("판매처 유형")
+ax2.set_title(f"{selected_product} 시장 vs 마트 평균 가격 비교", fontproperties=font_prop)
+ax2.set_ylabel("평균 가격 (원)", fontproperties=font_prop)
+ax2.set_xlabel("판매처 유형", fontproperties=font_prop)
 for i, v in enumerate(market_vs_mart):
-    ax2.text(i, v + 100, f"{int(v)}원", ha="center", fontsize=10)
+    ax2.text(i, v + 100, f"{int(v)}원", ha="center", fontsize=10, fontproperties=font_prop)
 st.pyplot(fig2)

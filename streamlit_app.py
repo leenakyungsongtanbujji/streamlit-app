@@ -36,6 +36,18 @@ selected_product = st.selectbox("분석할 품목을 선택하세요:", product_
 # 선택된 품목 데이터 필터링
 filtered_data = data[data["PRDLST_NM"] == selected_product]
 
+# 날짜 필터링 추가
+st.subheader("날짜 필터링")  # 새로 추가된 부분
+filtered_data["EXAMIN_DE"] = pd.to_datetime(filtered_data["EXAMIN_DE"])
+start_date = st.date_input("시작 날짜", value=filtered_data["EXAMIN_DE"].min())
+end_date = st.date_input("종료 날짜", value=filtered_data["EXAMIN_DE"].max())
+
+# 날짜 범위 필터링
+filtered_data = filtered_data[
+    (filtered_data["EXAMIN_DE"] >= pd.Timestamp(start_date)) &
+    (filtered_data["EXAMIN_DE"] <= pd.Timestamp(end_date))
+]
+
 # 평균, 최대, 최소 가격 계산
 average_price = filtered_data["EXAMIN_AMT"].mean()
 max_price = filtered_data["EXAMIN_AMT"].max()
@@ -54,7 +66,6 @@ st.write(f"가장 저렴하게 판매하는 곳: {cheapest_store} (지역: {chea
 
 # 가격 변동 그래프
 st.subheader(f"{selected_product} 가격 변동")
-filtered_data["EXAMIN_DE"] = pd.to_datetime(filtered_data["EXAMIN_DE"])
 daily_prices = filtered_data.groupby("EXAMIN_DE")["EXAMIN_AMT"].mean()
 
 fig, ax = plt.subplots(figsize=(10, 5))
@@ -77,7 +88,7 @@ market_vs_mart.plot(kind="bar", color=["salmon", "skyblue"], ax=ax2)
 ax2.set_title(f"{selected_product} 시장 vs 마트 평균 가격 비교", fontproperties=font_prop)
 ax2.set_ylabel("평균 가격 (원)", fontproperties=font_prop)
 ax2.set_xlabel("판매처 유형", fontproperties=font_prop)
-plt.xticks(fontproperties=font_prop)
+plt.xticks(rotation=0, fontproperties=font_prop)  # X축 글자 회전 제거
 plt.yticks(fontproperties=font_prop)
 for i, v in enumerate(market_vs_mart):
     ax2.text(i, v + 10, f"{int(v)}원", ha="center", fontsize=10, fontproperties=font_prop)

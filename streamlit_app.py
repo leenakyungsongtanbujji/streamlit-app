@@ -1,19 +1,11 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
-import matplotlib.font_manager as fm
-import os
-import subprocess
-
-# Streamlit Cloud에서 폰트 설치
-if not os.path.exists('/usr/share/fonts/truetype/nanum/NanumGothic.ttf'):
-    subprocess.run(["sudo", "apt-get", "update"])
-    subprocess.run(["sudo", "apt-get", "install", "-y", "fonts-nanum"])
-    subprocess.run(["fc-cache", "-fv"])
+from matplotlib import rc, font_manager
 
 # 한글 폰트 설정
-font_path = '/usr/share/fonts/truetype/nanum/NanumGothic.ttf'
-font_prop = fm.FontProperties(fname=font_path)
+font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"  # NanumGothic 폰트 경로
+font_prop = font_manager.FontProperties(fname=font_path)
 plt.rc('font', family=font_prop.get_name())
 plt.rcParams['axes.unicode_minus'] = False
 
@@ -21,7 +13,7 @@ plt.rcParams['axes.unicode_minus'] = False
 file_url = "https://raw.githubusercontent.com/leenakyungsongtanbujji/streamlit-app/main/top_5_detailed_products.csv"
 
 # CSV 파일 읽기
-data = pd.read_csv(file_url, encoding="utf-8")
+data = pd.read_csv(file_url, encoding="cp949")
 
 # 'EXAMIN_MRKT_NM' 열을 '판매처'로, 'EXAMIN_AREA_NM' 열을 '지역명'으로 사용
 data["판매처"] = data["EXAMIN_MRKT_NM"]

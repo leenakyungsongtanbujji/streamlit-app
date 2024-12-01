@@ -1,17 +1,27 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
-from matplotlib import rc
+import matplotlib.font_manager as fm
+import os
+import subprocess
+
+# Streamlit Cloud에서 폰트 설치
+if not os.path.exists('/usr/share/fonts/truetype/nanum/NanumGothic.ttf'):
+    subprocess.run(["sudo", "apt-get", "update"])
+    subprocess.run(["sudo", "apt-get", "install", "-y", "fonts-nanum"])
+    subprocess.run(["fc-cache", "-fv"])
 
 # 한글 폰트 설정
-rc('font', family='Malgun Gothic')
+font_path = '/usr/share/fonts/truetype/nanum/NanumGothic.ttf'
+font_prop = fm.FontProperties(fname=font_path)
+plt.rc('font', family=font_prop.get_name())
 plt.rcParams['axes.unicode_minus'] = False
 
 # GitHub에 업로드한 CSV 파일의 URL
 file_url = "https://raw.githubusercontent.com/leenakyungsongtanbujji/streamlit-app/main/top_5_detailed_products.csv"
 
 # CSV 파일 읽기
-data = pd.read_csv(file_url, encoding="cp949")
+data = pd.read_csv(file_url, encoding="utf-8")
 
 # 'EXAMIN_MRKT_NM' 열을 '판매처'로, 'EXAMIN_AREA_NM' 열을 '지역명'으로 사용
 data["판매처"] = data["EXAMIN_MRKT_NM"]
@@ -50,10 +60,10 @@ daily_prices = filtered_data.groupby("EXAMIN_DE")["EXAMIN_AMT"].mean()
 
 fig, ax = plt.subplots(figsize=(10, 5))
 ax.plot(daily_prices.index, daily_prices.values, marker='o', label=selected_product)
-ax.set_title(f"{selected_product}의 일별 평균 가격 변화")
-ax.set_xlabel("날짜")
-ax.set_ylabel("평균 가격 (원)")
-ax.legend()
+ax.set_title(f"{selected_product}의 일별 평균 가격 변화", fontproperties=font_prop)
+ax.set_xlabel("날짜", fontproperties=font_prop)
+ax.set_ylabel("평균 가격 (원)", fontproperties=font_prop)
+ax.legend(prop=font_prop)
 st.pyplot(fig)
 
 # 시장 vs 마트 가격 비교
@@ -63,9 +73,9 @@ market_vs_mart = filtered_data.groupby("판매처 유형")["EXAMIN_AMT"].mean()
 
 fig2, ax2 = plt.subplots(figsize=(10, 5))
 market_vs_mart.plot(kind="bar", color=["salmon", "skyblue"], ax=ax2)
-ax2.set_title(f"{selected_product} 시장 vs 마트 평균 가격 비교")
-ax2.set_ylabel("평균 가격 (원)")
-ax2.set_xlabel("판매처 유형")
+ax2.set_title(f"{selected_product} 시장 vs 마트 평균 가격 비교", fontproperties=font_prop)
+ax2.set_ylabel("평균 가격 (원)", fontproperties=font_prop)
+ax2.set_xlabel("판매처 유형", fontproperties=font_prop)
 for i, v in enumerate(market_vs_mart):
-    ax2.text(i, v + 100, f"{int(v)}원", ha="center", fontsize=10)
+    ax2.text(i, v + 100, f"{int(v)}원", ha="center", fontsize=10, fontproperties=font_prop)
 st.pyplot(fig2)
